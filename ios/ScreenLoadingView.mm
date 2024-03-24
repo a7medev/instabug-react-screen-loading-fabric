@@ -6,6 +6,7 @@
 #import <react/renderer/components/RNScreenLoadingViewSpec/RCTComponentViewHelpers.h>
 
 #import "RCTFabricComponentsPlugins.h"
+#import "IBGScreenLoading.h"
 
 using namespace facebook::react;
 
@@ -14,7 +15,7 @@ using namespace facebook::react;
 @end
 
 @implementation ScreenLoadingView {
-    UIView * _view;
+    IBGScreenLoading * _view;
 }
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
@@ -28,7 +29,7 @@ using namespace facebook::react;
     static const auto defaultProps = std::make_shared<const ScreenLoadingViewProps>();
     _props = defaultProps;
 
-    _view = [[UIView alloc] init];
+    _view = [[IBGScreenLoading alloc] init];
 
     self.contentView = _view;
   }
@@ -41,31 +42,12 @@ using namespace facebook::react;
     const auto &oldViewProps = *std::static_pointer_cast<ScreenLoadingViewProps const>(_props);
     const auto &newViewProps = *std::static_pointer_cast<ScreenLoadingViewProps const>(props);
 
-    if (oldViewProps.color != newViewProps.color) {
-        NSString * colorToConvert = [[NSString alloc] initWithUTF8String: newViewProps.color.c_str()];
-        [_view setBackgroundColor:[self hexStringToColor:colorToConvert]];
-    }
-
     [super updateProps:props oldProps:oldProps];
 }
 
 Class<RCTComponentViewProtocol> ScreenLoadingViewCls(void)
 {
     return ScreenLoadingView.class;
-}
-
-- hexStringToColor:(NSString *)stringToConvert
-{
-    NSString *noHashString = [stringToConvert stringByReplacingOccurrencesOfString:@"#" withString:@""];
-    NSScanner *stringScanner = [NSScanner scannerWithString:noHashString];
-    
-    unsigned hex;
-    if (![stringScanner scanHexInt:&hex]) return nil;
-    int r = (hex >> 16) & 0xFF;
-    int g = (hex >> 8) & 0xFF;
-    int b = (hex) & 0xFF;
-    
-    return [UIColor colorWithRed:r / 255.0f green:g / 255.0f blue:b / 255.0f alpha:1.0f];
 }
 
 @end
